@@ -25,58 +25,53 @@ int	free_map(char **map)
 	return (1);
 }
 
-void	destroy_player_img(t_data *vars)
+void	destroy_player_img(void)
 {
-	mlx_destroy_image(vars->mlx, vars->img.player_w);
-	mlx_destroy_image(vars->mlx, vars->img.player_s);
-	mlx_destroy_image(vars->mlx, vars->img.player_a);
-	mlx_destroy_image(vars->mlx, vars->img.player_d);
-	mlx_destroy_image(vars->mlx, vars->img.player_w2);
-	mlx_destroy_image(vars->mlx, vars->img.player_s2);
-	mlx_destroy_image(vars->mlx, vars->img.player_a2);
-	mlx_destroy_image(vars->mlx, vars->img.player_d2);
-	mlx_destroy_image(vars->mlx, vars->img.player_w3);
-	mlx_destroy_image(vars->mlx, vars->img.player_s3);
-	mlx_destroy_image(vars->mlx, vars->img.player_a3);
-	mlx_destroy_image(vars->mlx, vars->img.player_d3);
+	mlx_destroy_image(data()->mlx, data()->img.player_w);
+	mlx_destroy_image(data()->mlx, data()->img.player_s);
+	mlx_destroy_image(data()->mlx, data()->img.player_a);
+	mlx_destroy_image(data()->mlx, data()->img.player_d);
+	mlx_destroy_image(data()->mlx, data()->img.player_w2);
+	mlx_destroy_image(data()->mlx, data()->img.player_s2);
+	mlx_destroy_image(data()->mlx, data()->img.player_a2);
+	mlx_destroy_image(data()->mlx, data()->img.player_d2);
+	mlx_destroy_image(data()->mlx, data()->img.player_w3);
+	mlx_destroy_image(data()->mlx, data()->img.player_s3);
+	mlx_destroy_image(data()->mlx, data()->img.player_a3);
+	mlx_destroy_image(data()->mlx, data()->img.player_d3);
 }
 
-void	err(t_data *vars, char *msg)
+void	err(char *msg, int code)
 {
-	free_map(vars->map);
-	free_map(vars->map_copy);
-	if (vars->mlx)
+	free_map(data()->map);
+	free_map(data()->map_copy);
+	if (data()->mlx)
 	{
-		destroy_player_img(vars);
-		mlx_destroy_image(vars->mlx, vars->img.enemy);
-		mlx_destroy_image(vars->mlx, vars->img.collectible);
-		mlx_destroy_image(vars->mlx, vars->img.exit);
-		mlx_destroy_image(vars->mlx, vars->img.wall);
-		mlx_destroy_image(vars->mlx, vars->img.empty);
-		mlx_destroy_window(vars->mlx, vars->win_ptr);
-		mlx_destroy_display(vars->mlx);
-		free(vars->mlx);
+		destroy_player_img();
+		mlx_destroy_image(data()->mlx, data()->img.enemy);
+		mlx_destroy_image(data()->mlx, data()->img.collectible);
+		mlx_destroy_image(data()->mlx, data()->img.exit);
+		mlx_destroy_image(data()->mlx, data()->img.wall);
+		mlx_destroy_image(data()->mlx, data()->img.empty);
+		mlx_destroy_window(data()->mlx, data()->win_ptr);
+		mlx_destroy_display(data()->mlx);
+		free(data()->mlx);
 	}
 	ft_printf("%s\n", msg);
-	exit(1);
+	exit(code);
 }
 
-void	finish(t_data *vars)
+void	print_map(char **map)
 {
-	free_map(vars->map);
-	free_map(vars->map_copy);
-	if (vars->mlx)
+	int	i = -1, j;
+
+	if (!map)
+		err("deu merda", 1);
+	while (map[++i])
 	{
-		destroy_player_img(vars);
-		mlx_destroy_image(vars->mlx, vars->img.enemy);
-		mlx_destroy_image(vars->mlx, vars->img.collectible);
-		mlx_destroy_image(vars->mlx, vars->img.exit);
-		mlx_destroy_image(vars->mlx, vars->img.wall);
-		mlx_destroy_image(vars->mlx, vars->img.empty);
-		mlx_destroy_window(vars->mlx, vars->win_ptr);
-		mlx_destroy_display(vars->mlx);
-		free(vars->mlx);
+		j = -1;
+		while (map[i][++j])
+			printf("%c", map[i][j]);
+		printf("\n");
 	}
-	ft_printf("CONGRATS! You finished the game with %d moves!!\n", vars->moves);
-	exit(1);
 }

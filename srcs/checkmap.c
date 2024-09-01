@@ -12,81 +12,81 @@
 
 #include "includes/solong.h"
 
-void	check_rect(t_data *vars)
+void	check_rect(void)
 {
 	int	i;
 
 	i = 0;
-	while (vars->map[i])
+	while (data()->map[i])
 	{
-		if (ft_strlen(vars->map[i]) == vars->height)
-			err(vars, "Error: Map must be square!");
+		if (ft_strlen(data()->map[i]) == data()->height)
+			err("Error: Map must be square!", 1);
 		i++;
 	}
 }
 
-void	check_char(t_data *vars, int x, int y)
+void	check_char(int x, int y)
 {
-	while (++y < vars->height)
+	while (++y < data()->height)
 	{
 		x = -1;
-		while (vars->map[y][++x])
-			check_help(vars, x, y);
+		while (data()->map[y][++x])
+			check_help(x, y);
 	}
-	if (vars->n_player != 1)
-		err(vars, "Error: Invalid number of players!");
-	if (vars->n_exit != 1)
-		err(vars, "Error: Invalid number of exits!");
-	if (!vars->n_collectible)
-		err(vars, "Error: Invalid number of collectibles!");
+	if (data()->n_player != 1)
+		err("Error: Invalid number of players!", 1);
+	if (data()->n_exit != 1)
+		err("Error: Invalid number of exits!", 1);
+	if (!data()->n_collectible)
+		err("Error: Invalid number of collectibles!", 1);
 }
 
-void	check_walls(t_data *vars)
+void	check_walls(void)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (vars->map[i])
+	while (data()->map[i])
 	{
-		if (vars->map[i][0] != '1' || vars->map[i][vars->width - 1] != '1')
-			err(vars, "Error: Map must be surrounded by walls!");
+		if (data()->map[i][0] != '1' || data()->map[i][data()->width - 1] != '1')
+			err("Error: Map must be surrounded by walls!", 1);
 		i++;
 	}
 	j = 0;
-	while (vars->map[0][j])
+	while (data()->map[0][j])
 	{
-		if (vars->map[0][j] != '1' || vars->map[vars->height - 1][j] != '1')
-			err(vars, "Error: Map must be surrounded by walls!");
+		if (data()->map[0][j] != '1' || data()->map[data()->height - 1][j] != '1')
+			err("Error: Map must be surrounded by walls!", 1);
 		j++;
 	}
 }
 
-void	check_path(t_data *vars, int x, int y)
+void	check_path(int x, int y)
 {
-	if (vars->map_copy[y][x] == '1' || vars->map_copy[y][x] == 'L')
+	if (data()->map_copy[y][x] == '1' || data()->map_copy[y][x] == 'L')
 		return ;
-	if (vars->map_copy[y][x] == 'C')
-		vars->path_collectible++;
-	if (vars->map_copy[y][x] == 'E')
-		vars->n_exit--;
-	vars->map_copy[y][x] = '1';
-	check_path(vars, x + 1, y);
-	check_path(vars, x - 1, y);
-	check_path(vars, x, y + 1);
-	check_path(vars, x, y - 1);
+	if (data()->map_copy[y][x] == 'C')
+		data()->path_collectible++;
+	if (data()->map_copy[y][x] == 'E')
+		data()->n_exit--;
+	data()->map_copy[y][x] = '1';
+	check_path(x + 1, y);
+	check_path(x - 1, y);
+	check_path(x, y + 1);
+	check_path(x, y - 1);
 }
 
-void	check_map(t_data *vars)
+void	check_map(void)
 {
-	check_rect(vars);
-	check_walls(vars);
-	check_char(vars, -1, -1);
-	vars->tot_collectible = vars->n_collectible;
-	check_path(vars, vars->player_x, vars->player_y);
-	if (vars->path_collectible != vars->n_collectible)
-		err(vars, "Error: Could not find valid path,\
-	 can't collect all collectibles!");
-	if (vars->n_exit != 0)
-		err(vars, "Error: Could not find valid path, Exit is blocked!");
+	check_rect();
+	check_walls();
+	check_char(-1, -1);
+	data()->tot_collectible = data()->n_collectible;
+	check_path(data()->player_x, data()->player_y);
+	if (data()->path_collectible != data()->n_collectible)
+		err("Error: Could not find valid path,\
+	 can't collect all collectibles!", 1);
+	if (data()->n_exit != 0)
+		err("Error: Could not find valid path, Exit is blocked!", 1);
 }

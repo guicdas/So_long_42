@@ -12,71 +12,20 @@
 
 #include "includes/solong.h"
 
-void	change_img(t_data *vars, char c, int dir)
+void	change_img_y(int dir)
 {
-	put(vars, vars->img.empty, vars->player_x, vars->player_y); 
-	vars->map[vars->player_y][vars->player_x] = '0';
-	if (c == 'y')
-	{
-		vars->player_y += dir;
-		if (dir < 0)
-			put(vars, vars->img.player_w, vars->player_x, vars->player_y);
-		else
-			put(vars, vars->img.player_s, vars->player_x, vars->player_y);
-	}
-	if (c == 'x')
-	{
-		vars->player_x += dir;
-		if (dir < 0)
-			put(vars, vars->img.player_a, vars->player_x, vars->player_y);
-		else
-			put(vars, vars->img.player_d, vars->player_x, vars->player_y);
-	}
-	vars->map[vars->player_y][vars->player_x] = 'P';
+	data()->player_y += dir;
+	if (dir < 0)
+		put_player_w(data()->player_x, data()->player_y);
+	else
+		put_player_s(data()->player_x, data()->player_y);
 }
 
-void	change_img2(t_data *vars, char c, int dir)
+void	change_img_x(int dir)
 {
-	put(vars, vars->img.empty, vars->player_x, vars->player_y); 
-	vars->map[vars->player_y][vars->player_x] = '0';
-	if (c == 'y')
-	{
-		vars->player_y += dir;
-		if (dir < 0)
-			put(vars, vars->img.player_w2, vars->player_x, vars->player_y);
-		else
-			put(vars, vars->img.player_s2, vars->player_x, vars->player_y);
-	}
-	if (c == 'x')
-	{
-		vars->player_x += dir;
-		if (dir < 0)
-			put(vars, vars->img.player_a2, vars->player_x, vars->player_y);
-		else
-			put(vars, vars->img.player_d2, vars->player_x, vars->player_y);
-	}
-	vars->map[vars->player_y][vars->player_x] = 'P';
-}
-
-void	change_img3(t_data *vars, char c, int dir)
-{
-	put(vars, vars->img.empty, vars->player_x, vars->player_y); 
-	vars->map[vars->player_y][vars->player_x] = '0';
-	if (c == 'y')
-	{
-		vars->player_y += dir;
-		if (dir < 0)
-			put(vars, vars->img.player_w3, vars->player_x, vars->player_y);
-		else
-			put(vars, vars->img.player_s3, vars->player_x, vars->player_y);
-	}
-	if (c == 'x')
-	{
-		vars->player_x += dir;
-		if (dir < 0)
-			put(vars, vars->img.player_a3, vars->player_x, vars->player_y);
-		else
-			put(vars, vars->img.player_d3, vars->player_x, vars->player_y);
-	}
-	vars->map[vars->player_y][vars->player_x] = 'P';
+	data()->player_x += dir;
+	if (dir < 0)
+		put_player_a(data()->player_x, data()->player_y);
+	else
+		put_player_d(data()->player_x, data()->player_y);
 }

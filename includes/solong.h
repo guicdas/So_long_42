@@ -10,8 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOLONG_H
-# define SOLONG_H
+#pragma once
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -71,14 +70,18 @@ typedef struct s_data
 	char	**map;
 	char	**map_copy;
 	int		moves;
+	float	level;
 }t_data;
 
-//--------HOOKS----///
-int		mouse_hook(int button, int x, int y, t_data *vars);
-int		destroy_hook(t_data *vars);
-int		key_hook(int keycode, t_data *vars);
-int		movekey_hook(int keypress, t_data *vars);
-//----HELP-FUNCS----//
+t_data	*data(void);
+
+//-----	HOOKS	-----//
+int		mouse_hook(int button, int x, int y);
+int		destroy_hook(void);
+int		key_hook(int keycode);
+int		movekey_hook(int keypress);
+
+//-----	LIBFT	-----//
 int		wordnum(char *s, char c);
 int		wordlen(char *s, char c);
 char	*word(char *s, char c);
@@ -88,23 +91,33 @@ int		ft_strncmp(char *s1, char *s2, size_t n);
 char	*ft_substr(char *s, unsigned int start, size_t len);
 char	*ft_strdup(char *s);
 char	*ft_strjoin(char *s1, char *s2);
-//-------UTILS------//
-void	put(t_data *vars, void *img, int x, int y);
-void	assets(t_data	*vars, void *mlx_ptr);
-void	check_help(t_data *vars, int x, int y);
-//--------MAP---------//
-void	check_map(t_data *vars);
-int		check_move(char c, t_data *vars);
-char	move_enemy(t_data *vars, char dir);
-//-------ENEMY-------//
-char	change_enemy(t_data *vars, char dir, int num);
-//-------CHANGE-------//
-void	change_img(t_data *vars, char c, int dir);
-void	change_img2(t_data *vars, char c, int dir);
-void	change_img3(t_data *vars, char c, int dir);
-//-------DESTROY------//
+
+//-----	UTILS	-----//
+void	put(void *img, int x, int y);
+void	assets(void);
+void	check_help(int x, int y);
+void	print_map(char **map);
+
+void	put_player_w(int x, int y);
+void	put_player_a(int x, int y);
+void	put_player_s(int x, int y);
+void	put_player_d(int x, int y);
+
+//-----	MAP		-----//
+void	check_map(void);
+int		check_move(char c);
+char	move_enemy(char dir);
+
+//-----	ENEMY	-----//
+char	change_enemy(char dir, int num);
+
+//-----	CHANGE	-----//
+void	change_img_y(int dir);
+void	change_img_x(int dir);
+
+//-----	DESTROY	-----//
 int		free_map(char **map);
-void	err(t_data *vars, char *msg);
-void	destroy_player_img(t_data *vars);
-void	finish(t_data *vars);
-#endif
+void	err(char *msg, int code);
+void	destroy_player_img(void);
+
+//-----	PLAYER	-----//

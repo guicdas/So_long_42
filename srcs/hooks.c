@@ -12,85 +12,70 @@
 
 #include "includes/solong.h"
 
-int	destroy_hook(t_data *vars)
+int	destroy_hook(void)
 {
-	err(vars, "\nexit");
+	err("Game closed\n", 1);
+
 	return (0);
 }
 
-int	check_move(char c, t_data *vars)
+int	check_move(char c)
 {
 	if (c == '0' || c == 'C')
 	{
-		vars->n_collectible -= (c == 'C');
+		data()->n_collectible -= (c == 'C');
 		return (1);
 	}
-	if (c == 'E' && !vars->n_collectible)
-	{
-		finish(vars);
-		return (1);
-	}
+	if (c == 'E' && !data()->n_collectible)
+		err("CONGRATS YOU FINISHED THE GAME!", 0);
 	if (c == 'L')
-		err(vars, "YOU DIED!");
+		err("YOU DIED!", 1);
 	return (0);
 }
 
-int	move_help(t_data *vars, char c, int num, int level)
+int	move_player(char c, int num)
 {
-	if (level > vars->tot_collectible * (2 * vars->tot_collectible / 3))
-		change_img(vars, c, num);
-	else if (level > vars->tot_collectible * (1 * vars->tot_collectible / 3))
-		change_img2(vars, c, num);
+	put(data()->img.empty, data()->player_x, data()->player_y); 
+	data()->map[data()->player_y][data()->player_x] = '0';
+	if (c == 'y')
+		change_img_y(num);
 	else
-		change_img3(vars, c, num);
+		change_img_x(num);
+	data()->map[data()->player_y][data()->player_x] = 'P';
 	return (1);
 }
 
-int	move(t_data *vars, int keypress)
+int	move(int keypress)
 {
 	if (keypress == KEY_W && check_move(\
-	vars->map[vars->player_y - 1][vars->player_x], vars))
-	{
-		move_help(vars, 'y', -1, (vars->tot_collectible * vars->n_collectible));
-		return (1);
-	}
-	if (keypress == KEY_D && check_move(\
-	vars->map[vars->player_y][vars->player_x + 1], vars))
-	{
-		move_help(vars, 'x', 1, (vars->tot_collectible * vars->n_collectible));
-		return (1);
-	}
-	if (keypress == KEY_A && check_move(\
-	vars->map[vars->player_y][vars->player_x - 1], vars))
-	{
-		move_help(vars, 'x', -1, (vars->tot_collectible * vars->n_collectible));
-		return (1);
-	}
-	if (keypress == KEY_S && check_move(\
-	vars->map[vars->player_y + 1][vars->player_x], vars))
-	{
-		move_help(vars, 'y', 1, (vars->tot_collectible * vars->n_collectible));
-		return (1);
-	}
+	data()->map[data()->player_y - 1][data()->player_x]))
+		return (move_player('y', -1));
+	else if (keypress == KEY_D && check_move(\
+	data()->map[data()->player_y][data()->player_x + 1]))
+		return(move_player('x', 1));
+	else if (keypress == KEY_A && check_move(\
+	data()->map[data()->player_y][data()->player_x - 1]))
+		return (move_player('x', -1));
+	else if (keypress == KEY_S && check_move(\
+	data()->map[data()->player_y + 1][data()->player_x]))
+		return(move_player('y', 1));
 	return (0);
 }
 
-int	movekey_hook(int keypress, t_data *vars)
+int	movekey_hook(int keypress)
 {
-	char	*str;
-	char	dir;
+	//char	dir;
 
-	dir = 'w';
-	dir = move_enemy(vars, dir);
+	//dir = 'w';
+	//dir = move_enemy(vars, dir);
+	data()->level = data()->n_collectible / data()->tot_collectible;
 	if (keypress == KEY_ESC)
-		err(vars, "\nexit");
-	if (move(vars, keypress))
+		err("exit", 1);
+	if (move(keypress))
 	{
-		str = ft_itoa(++vars->moves, 10, "0123456789");
-		mlx_put_image_to_window(vars->mlx, vars->win_ptr, \
-	vars->img.wall, 1, 1);
-		mlx_string_put(vars->mlx, vars->win_ptr, \
-	5, 15, 0x00FF0000, str);
+		put(data()->img.wall, 0, 0);
+		mlx_string_put(data()->mlx, data()->win_ptr, 5, 15, \
+	0x00FF0000, ft_itoa(++data()->moves, 10, "0123456789"));
 	}
 	return (0);
 }

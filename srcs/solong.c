@@ -12,35 +12,41 @@
 
 #include "includes/solong.h"
 
-void	player_assets(t_data *vars, void *mlx_ptr)
-{
-	vars->img.player_s = mlx_xpm_file_to_image(mlx_ptr, "xpm/slime_s.xpm", \
-	&vars->img.width, &vars->img.height);
-	vars->img.player_w = mlx_xpm_file_to_image(mlx_ptr, "xpm/slime_w.xpm", \
-	&vars->img.width, &vars->img.height);
-	vars->img.player_a = mlx_xpm_file_to_image(mlx_ptr, "xpm/slime_a.xpm", \
-	&vars->img.width, &vars->img.height);
-	vars->img.player_d = mlx_xpm_file_to_image(mlx_ptr, "xpm/slime_d.xpm", \
-	&vars->img.width, &vars->img.height);
-	vars->img.player_s2 = mlx_xpm_file_to_image(mlx_ptr, "xpm/slime_s2.xpm", \
-	&vars->img.width, &vars->img.height);
-	vars->img.player_w2 = mlx_xpm_file_to_image(mlx_ptr, "xpm/slime_w2.xpm", \
-	&vars->img.width, &vars->img.height);
-	vars->img.player_a2 = mlx_xpm_file_to_image(mlx_ptr, "xpm/slime_a2.xpm", \
-	&vars->img.width, &vars->img.height);
-	vars->img.player_d2 = mlx_xpm_file_to_image(mlx_ptr, "xpm/slime_d2.xpm", \
-	&vars->img.width, &vars->img.height);
-	vars->img.player_s3 = mlx_xpm_file_to_image(mlx_ptr, "xpm/slime_s3.xpm", \
-	&vars->img.width, &vars->img.height);
-	vars->img.player_w3 = mlx_xpm_file_to_image(mlx_ptr, "xpm/slime_w3.xpm", \
-	&vars->img.width, &vars->img.height);
-	vars->img.player_a3 = mlx_xpm_file_to_image(mlx_ptr, "xpm/slime_a3.xpm", \
-	&vars->img.width, &vars->img.height);
-	vars->img.player_d3 = mlx_xpm_file_to_image(mlx_ptr, "xpm/slime_d3.xpm", \
-	&vars->img.width, &vars->img.height);
+t_data	*data(void){
+	static t_data	d;
+
+	return (&d);
 }
 
-void	load_map(int fd, t_data	*vars)
+void	player_assets(void)
+{
+	data()->img.player_s = mlx_xpm_file_to_image(data()->mlx, "textures/slime_s.xpm", \
+	&data()->img.width, &data()->img.height);
+	data()->img.player_w = mlx_xpm_file_to_image(data()->mlx, "textures/slime_w.xpm", \
+	&data()->img.width, &data()->img.height);
+	data()->img.player_a = mlx_xpm_file_to_image(data()->mlx, "textures/slime_a.xpm", \
+	&data()->img.width, &data()->img.height);
+	data()->img.player_d = mlx_xpm_file_to_image(data()->mlx, "textures/slime_d.xpm", \
+	&data()->img.width, &data()->img.height);
+	data()->img.player_s2 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_s2.xpm", \
+	&data()->img.width, &data()->img.height);
+	data()->img.player_w2 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_w2.xpm", \
+	&data()->img.width, &data()->img.height);
+	data()->img.player_a2 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_a2.xpm", \
+	&data()->img.width, &data()->img.height);
+	data()->img.player_d2 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_d2.xpm", \
+	&data()->img.width, &data()->img.height);
+	data()->img.player_s3 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_s3.xpm", \
+	&data()->img.width, &data()->img.height);
+	data()->img.player_w3 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_w3.xpm", \
+	&data()->img.width, &data()->img.height);
+	data()->img.player_a3 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_a3.xpm", \
+	&data()->img.width, &data()->img.height);
+	data()->img.player_d3 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_d3.xpm", \
+	&data()->img.width, &data()->img.height);
+}
+
+void	load_map(int fd)
 {
 	char	*str;
 	char	*lines;
@@ -49,7 +55,7 @@ void	load_map(int fd, t_data	*vars)
 	while (1)
 	{
 		str = get_next_line(fd);
-		if (!str || (++vars->height == 0))
+		if (!str || (++data()->height == 0))
 			break ;
 		if (lines)
 			lines = ft_strjoin(lines, str);
@@ -59,81 +65,78 @@ void	load_map(int fd, t_data	*vars)
 	}
 	close (fd);
 	if (!lines)
-		err(vars, "Error: Map not valid!");
-	vars->map = ft_split(lines, '\n');
-	vars->map_copy = ft_split(lines, '\n');
+		err("Error: Map not valid!", 1);
+	data()->map = ft_split(lines, '\n');
+	data()->map_copy = ft_split(lines, '\n');
 	free(lines);
-	if (!vars->map)
-		err(vars, "Error: Map does not exist!");
-	vars->width = ft_strlen(vars->map[0]);
+	if (!data()->map)
+		err("Error: Map does not exist!", 1);
+	data()->width = ft_strlen(data()->map[0]);
 }
 
-void	put_map_to_window(t_data *v, int i, t_img img, void *win)
+void	put_map_to_window(void)
 {
-	int	j;
+	int	i = 0, j;
 
-	while (v->map[i])
+	while (data()->map[i])
 	{
 		j = 0;
-		while (v->map[i][j])
+		while (data()->map[i][j])
 		{
-			if (v->map[i][j] == '1')
-				mlx_put_image_to_window(v->mlx, win, img.wall, 64 * j, 64 * i);
-			if (v->map[i][j] == '0')
-				mlx_put_image_to_window(v->mlx, win, img.empty, 64 * j, 64 * i);
-			if (v->map[i][j] == 'C')
-				mlx_put_image_to_window(v->mlx, win, \
-			img.collectible, 64 * j, 64 * i);
-			if (v->map[i][j] == 'E')
-				mlx_put_image_to_window(v->mlx, win, img.exit, 64 * j, 64 * i);
-			if (v->map[i][j] == 'P')
-				mlx_put_image_to_window(v->mlx, win, \
-			img.player_w, 64 * j, 64 * i);
-			if (v->map[i][j] == 'L')
-				mlx_put_image_to_window(v->mlx, win, img.enemy, 64 * j, 64 * i);
+			if (data()->map[i][j] == '1')
+				put(data()->img.wall, j, i);
+			if (data()->map[i][j] == '0')
+				put(data()->img.empty, j, i);
+			if (data()->map[i][j] == 'C')
+				put(data()->img.collectible, j, i);
+			if (data()->map[i][j] == 'E')
+				put(data()->img.exit, j, i);
+			if (data()->map[i][j] == 'P')
+				put(data()->img.player_w, j, i);
+			if (data()->map[i][j] == 'L')
+				put(data()->img.enemy, j, i);
 			j++;
 		}
 		i++;
 	}
 }
 
-int	check_arg(t_data	*vars, int argc, char *argv[])
+int	check_arg(int argc, char *argv[])
 {
 	char	*str;
 	int		i;
 	int		fd;
 
 	if (argc != 2 || ft_strlen(argv[1]) < 5)
-		err(vars, "Error: Invalid input.\n");
+		err("Error: Invalid input.\n", 1);
 	i = ft_strlen(argv[1]);
 	str = ft_substr(argv[1], i - 4, 4);
 	if (ft_strncmp(".ber", str, 4) != 0)
 	{
 		free(str);
-		err(vars, "Error: File needs to be '.ber' .\n");
+		err("Error: File needs to be '.ber' .\n", 1);
 	}
 	fd = open(argv[1], O_RDONLY);
 	if (fd == -1)
-		err(vars, "Error: Map does not open!");
+		err("Error: Map does not open!", 1);
 	free(str);
 	return (fd);
 }
 
 int	main(int argc, char **argv)
 {
-	static t_data	vars;
+	load_map(check_arg(argc, argv));
+	check_map();
+	data()->mlx = mlx_init();
+	data()->win_ptr = \
+	mlx_new_window(data()->mlx, data()->width * 64, data()->height * 64, "So long!");
+	if (!data()->mlx || !data()->win_ptr)
+		err("Error: Couldn't initialize window!\n", 1);
+	assets();
+	player_assets();
+	put_map_to_window();
+	mlx_hook(data()->win_ptr, 17, 0, destroy_hook, data());
+	mlx_key_hook(data()->win_ptr, movekey_hook, data());
+	mlx_loop(data()->mlx);
 
-	load_map(check_arg(&vars, argc, argv), &vars);
-	check_map(&vars);
-	vars.mlx = mlx_init();
-	vars.win_ptr = \
-	mlx_new_window(vars.mlx, vars.width * 64, vars.height * 64, "So long!");
-	if (!vars.mlx || !vars.win_ptr)
-		err(&vars, "Init");
-	assets(&vars, vars.mlx);
-	player_assets(&vars, vars.mlx);
-	put_map_to_window(&vars, 0, vars.img, vars.win_ptr);
-	mlx_hook(vars.win_ptr, 17, 0, destroy_hook, &vars);
-	mlx_key_hook(vars.win_ptr, movekey_hook, &vars);
-	mlx_loop(vars.mlx);
 }
