@@ -1,3 +1,6 @@
 [submodule "minilibx-linux"]
 	path = minilibx-linux
 	url = https://github.com/42Paris/minilibx-linux.git
+[submodule "ft_printf"]
+	path = ft_printf
+	url = git@github.com:guicdas/Ft_printf_42.git

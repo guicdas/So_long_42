@@ -39,6 +39,9 @@ all:	objs $(NAME)
 minilibx:
 	make -C minilibx-linux/
 
+printf:
+	make -C ft_printf/
+
 objs:
 	mkdir -p objects
 
