@@ -57,7 +57,8 @@ void	err(char *msg, int code)
 		mlx_destroy_display(data()->mlx);
 		free(data()->mlx);
 	}
-	ft_printf("%s\n", msg);
+	write(2, msg, ft_strlen(msg));
+	write(2, "\n", 1);
 	exit(code);
 }
 
