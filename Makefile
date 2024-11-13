@@ -14,46 +14,45 @@ CC				= cc
 CFLAGS			= -Wall -Wextra -Werror -I. #-fsanitize=address
 RM				= rm -fr
 
+SRCS_DIR		= srcs
+OBJS_DIR		= objs
 NAME			= so_long
 HEADER			= includes/solong.h
 
-INCLUDE			= -Lmlx_linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
-SOURCES			= sources/ft_split.c sources/enemy.c sources/change_img.c sources/end.c sources/checkmap.c \
-				sources/ft_utils_2.c sources/ft_utils.c sources/hooks.c sources/solong.c sources/ft_itoa.c \
-				sources/get_next_line.c sources/get_next_line_utils.c sources/player.c \
-					
 MLX				= minilibx-linux/libmlx_Linux.a
+INCLUDE			= -Lmlx_linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
 
-SOURCES_O		= $(SOURCES:sources/%.c=objects/%.o)
+SOURCES			= $(SRCS_DIR)/ft_split.c $(SRCS_DIR)/enemy.c $(SRCS_DIR)/change_img.c $(SRCS_DIR)/end.c $(SRCS_DIR)/checkmap.c \
+				$(SRCS_DIR)/ft_utils_2.c $(SRCS_DIR)/ft_utils.c $(SRCS_DIR)/hooks.c $(SRCS_DIR)/solong.c $(SRCS_DIR)/ft_itoa.c \
+				$(SRCS_DIR)/get_next_line.c $(SRCS_DIR)/get_next_line_utils.c $(SRCS_DIR)/player.c \
+					
+SOURCES_O		= $(SOURCES:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 
 
 
 %.o: %.c
 	$(CC) $(CFLAGS) -o so_long -I/usr/include -Imlx_linux -O3 -c $< -o $@
 
-all:	objs minilibx $(NAME)
+all:	minilibx $(NAME)
 
 minilibx:
 	make -C minilibx-linux/
 
-objs:
-	mkdir -p objects
+$(OBJS_DIR):
+	mkdir -p objs
 
 $(NAME):		$(SOURCES_O)
 	clear
 	${CC} $(CFLAGS) $(SOURCES_O) $(MLX) $(INCLUDE) -o $(NAME)
 
-objects/%.o: sources/%.c
+$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c | $(OBJS_DIR)
 	${CC} ${CFLAGS} -c $^ -o $@
 
-.c.o:
-	$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
-
 clean:
-	$(RM) $(SOURCES_O) objs
+	$(RM) $(OBJS_DIR)
 
 fclean:			clean
-	$(RM) $(NAME) $(SOURCES_O)
+	$(RM) $(NAME)
 
 re:				fclean $(NAME)
 
