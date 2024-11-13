@@ -17,7 +17,6 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include "minilibx-linux/mlx.h"
-# include "ft_printf.h"
 # include "get_next_line.h"
 
 # define KEY_W 119
