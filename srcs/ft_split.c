@@ -12,7 +12,7 @@
 
 #include "includes/solong.h"
 
-int	wordnum(char *s, char c)
+static int	wordnum(char *s, char c)
 {
 	int	i;
 	int	count;
@@ -31,7 +31,7 @@ int	wordnum(char *s, char c)
 	return (count);
 }
 
-int	wordlen(char *s, char c)
+static int	wordlen(char *s, char c)
 {
 	int	i;
 
@@ -41,7 +41,7 @@ int	wordlen(char *s, char c)
 	return (i);
 }
 
-char	*word(char *s, char c)
+static char	*word(char *s, char c)
 {
 	int		i;
 	char	*word;

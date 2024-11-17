@@ -23,8 +23,8 @@ MLX				= minilibx-linux/libmlx_Linux.a
 INCLUDE			= -Lmlx_linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
 
 SOURCES			= $(SRCS_DIR)/ft_split.c $(SRCS_DIR)/enemy.c $(SRCS_DIR)/change_img.c $(SRCS_DIR)/end.c $(SRCS_DIR)/checkmap.c \
-				$(SRCS_DIR)/ft_utils_2.c $(SRCS_DIR)/ft_utils.c $(SRCS_DIR)/hooks.c $(SRCS_DIR)/solong.c $(SRCS_DIR)/ft_itoa.c \
-				$(SRCS_DIR)/get_next_line.c $(SRCS_DIR)/get_next_line_utils.c $(SRCS_DIR)/player.c \
+				$(SRCS_DIR)/ft_utils_2.c $(SRCS_DIR)/ft_utils.c $(SRCS_DIR)/hooks.c $(SRCS_DIR)/solong.c \
+				$(SRCS_DIR)/get_next_line.c $(SRCS_DIR)/get_next_line_utils.c\
 					
 SOURCES_O		= $(SOURCES:$(SRCS_DIR)/%.c=$(OBJS_DIR)/%.o)
 

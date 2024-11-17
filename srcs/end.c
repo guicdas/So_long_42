@@ -27,18 +27,18 @@ int	free_map(char **map)
 
 void	destroy_player_img(void)
 {
-	mlx_destroy_image(data()->mlx, data()->img.player_w);
-	mlx_destroy_image(data()->mlx, data()->img.player_s);
-	mlx_destroy_image(data()->mlx, data()->img.player_a);
-	mlx_destroy_image(data()->mlx, data()->img.player_d);
-	mlx_destroy_image(data()->mlx, data()->img.player_w2);
-	mlx_destroy_image(data()->mlx, data()->img.player_s2);
-	mlx_destroy_image(data()->mlx, data()->img.player_a2);
-	mlx_destroy_image(data()->mlx, data()->img.player_d2);
-	mlx_destroy_image(data()->mlx, data()->img.player_w3);
-	mlx_destroy_image(data()->mlx, data()->img.player_s3);
-	mlx_destroy_image(data()->mlx, data()->img.player_a3);
-	mlx_destroy_image(data()->mlx, data()->img.player_d3);
+	mlx_destroy_image(data()->mlx, data()->img.player_w.lvl_1);
+	mlx_destroy_image(data()->mlx, data()->img.player_w.lvl_2);
+	mlx_destroy_image(data()->mlx, data()->img.player_w.lvl_3);
+	mlx_destroy_image(data()->mlx, data()->img.player_s.lvl_1);
+	mlx_destroy_image(data()->mlx, data()->img.player_s.lvl_2);
+	mlx_destroy_image(data()->mlx, data()->img.player_s.lvl_3);
+	mlx_destroy_image(data()->mlx, data()->img.player_a.lvl_1);
+	mlx_destroy_image(data()->mlx, data()->img.player_a.lvl_2);
+	mlx_destroy_image(data()->mlx, data()->img.player_a.lvl_3);
+	mlx_destroy_image(data()->mlx, data()->img.player_d.lvl_1);
+	mlx_destroy_image(data()->mlx, data()->img.player_d.lvl_2);
+	mlx_destroy_image(data()->mlx, data()->img.player_d.lvl_3);
 }
 
 void	err(char *msg, int code)

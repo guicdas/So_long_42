@@ -12,23 +12,20 @@
 
 #include "includes/solong.h"
 
+t_data	*data(void){
+	static t_data	d;
+
+	return (&d);
+}
+
 void	put(void *img, int x, int y)
 {
 	mlx_put_image_to_window(data()->mlx, data()->win_ptr, img, 64 * x, 64 * y);
 }
 
-void	assets(void)
+int	*xpm_to_image(char  *filename)
 {
-	data()->img.collectible = mlx_xpm_file_to_image(data()->mlx, "textures/XY_plane.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.exit = mlx_xpm_file_to_image(data()->mlx, "textures/open30.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.wall = mlx_xpm_file_to_image(data()->mlx, "textures/open24.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.empty = mlx_xpm_file_to_image(data()->mlx, "textures/floor.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.enemy = mlx_xpm_file_to_image(data()->mlx, "textures/open.xpm", \
-	&data()->img.width, &data()->img.height);
+	return (mlx_xpm_file_to_image(data()->mlx, filename, &data()->img.width, &data()->img.height));
 }
 
 void	check_help(int x, int y)
@@ -51,4 +48,18 @@ void	check_help(int x, int y)
 	}
 	else if (data()->map[y][x] != '1' && data()->map[y][x] != '0')
 		err("Error: Invalid character in map!", 1);
+}
+
+int	check_move(char c)
+{
+	if (c == '0' || c == 'C')
+	{
+		data()->n_collectible -= (c == 'C');
+		return (1);
+	}
+	if (c == 'E' && !data()->n_collectible)
+		err("CONGRATS YOU FINISHED THE GAME!", 0);
+	if (c == 'L')
+		err("YOU DIED!", 1);
+	return (0);
 }

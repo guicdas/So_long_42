@@ -19,21 +19,23 @@ int	destroy_hook(void)
 	return (0);
 }
 
-int	check_move(char c)
-{
-	if (c == '0' || c == 'C')
-	{
-		data()->n_collectible -= (c == 'C');
-		return (1);
+int	frame_hook(void) {
+	data()->fps.frames++;	
+	gettimeofday(&data()->fps.current_t, NULL);
+
+	long fps_elapsed_time = (data()->fps.current_t.tv_sec - data()->fps.start_t.tv_sec) * 1000000\
+	 + (data()->fps.current_t.tv_usec - data()->fps.start_t.tv_usec);
+	if (fps_elapsed_time >= 1000000) {  // 1 second has passed
+		data()->fps.fps = (float)(data()->fps.frames - data()->fps.last_frames);  // calculate FPS in the last second
+		printf("FPS: %.2f\n", data()->fps.fps / 1000); //not sure if right
+
+		data()->fps.last_frames = data()->fps.frames;
+		data()->fps.start_t = data()->fps.current_t;
 	}
-	if (c == 'E' && !data()->n_collectible)
-		err("CONGRATS YOU FINISHED THE GAME!", 0);
-	if (c == 'L')
-		err("YOU DIED!", 1);
-	return (0);
+	return 0;
 }
 
-int	move_player(char c, int num)
+static int	move_player(char c, int num)
 {
 	put(data()->img.empty, data()->player_x, data()->player_y); 
 	data()->map[data()->player_y][data()->player_x] = '0';
@@ -45,7 +47,7 @@ int	move_player(char c, int num)
 	return (1);
 }
 
-int	move(int keypress)
+static int	move(int keypress)
 {
 	if (keypress == KEY_W && check_move(\
 	data()->map[data()->player_y - 1][data()->player_x]))
@@ -74,8 +76,7 @@ int	movekey_hook(int keypress)
 	if (move(keypress))
 	{
 		put(data()->img.wall, 0, 0);
-		mlx_string_put(data()->mlx, data()->win_ptr, 5, 15, \
-	0x00FF0000, ft_itoa(++data()->moves, 10, "0123456789"));
+		//mlx_string_put(data()->mlx, data()->win_ptr, 5, 15, 0x00FF0000, ft_itoa(++data()->moves, 10, "0123456789"));
 	}
 	return (0);
 }

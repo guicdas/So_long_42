@@ -12,41 +12,28 @@
 
 #include "includes/solong.h"
 
-t_data	*data(void){
-	static t_data	d;
-
-	return (&d);
-}
-
-void	player_assets(void)
+static void	player_assets(void)
 {
-	data()->img.player_s = mlx_xpm_file_to_image(data()->mlx, "textures/slime_s.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.player_w = mlx_xpm_file_to_image(data()->mlx, "textures/slime_w.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.player_a = mlx_xpm_file_to_image(data()->mlx, "textures/slime_a.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.player_d = mlx_xpm_file_to_image(data()->mlx, "textures/slime_d.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.player_s2 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_s2.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.player_w2 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_w2.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.player_a2 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_a2.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.player_d2 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_d2.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.player_s3 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_s3.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.player_w3 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_w3.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.player_a3 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_a3.xpm", \
-	&data()->img.width, &data()->img.height);
-	data()->img.player_d3 = mlx_xpm_file_to_image(data()->mlx, "textures/slime_d3.xpm", \
-	&data()->img.width, &data()->img.height);
+	data()->img.player_s.lvl_1 = xpm_to_image("textures/slime_s.xpm");
+	data()->img.player_w.lvl_1 = xpm_to_image("textures/slime_w.xpm");
+	data()->img.player_a.lvl_1 = xpm_to_image("textures/slime_a.xpm");
+	data()->img.player_d.lvl_1 = xpm_to_image("textures/slime_d.xpm");
+	data()->img.player_s.lvl_2 = xpm_to_image("textures/slime_s2.xpm");
+	data()->img.player_w.lvl_2 = xpm_to_image("textures/slime_w2.xpm");
+	data()->img.player_a.lvl_2 = xpm_to_image("textures/slime_a2.xpm");
+	data()->img.player_d.lvl_2 = xpm_to_image("textures/slime_d2.xpm");
+	data()->img.player_s.lvl_3 = xpm_to_image("textures/slime_s3.xpm");
+	data()->img.player_w.lvl_3 = xpm_to_image("textures/slime_w3.xpm");
+	data()->img.player_a.lvl_3 = xpm_to_image("textures/slime_a3.xpm");
+	data()->img.player_d.lvl_3 = xpm_to_image("textures/slime_d3.xpm");
+	data()->img.collectible = xpm_to_image("textures/XY_plane.xpm");
+	data()->img.exit = xpm_to_image("textures/open30.xpm");
+	data()->img.wall = xpm_to_image("textures/open24.xpm");
+	data()->img.empty = xpm_to_image("textures/floor.xpm");
+	data()->img.enemy = xpm_to_image("textures/open.xpm");
 }
 
-void	load_map(int fd)
+static void	load_map(int fd)
 {
 	char	*str;
 	char	*lines;
@@ -74,7 +61,7 @@ void	load_map(int fd)
 	data()->width = ft_strlen(data()->map[0]);
 }
 
-void	put_map_to_window(void)
+static void	put_map_to_window(void)
 {
 	int	i = 0, j;
 
@@ -92,7 +79,7 @@ void	put_map_to_window(void)
 			if (data()->map[i][j] == 'E')
 				put(data()->img.exit, j, i);
 			if (data()->map[i][j] == 'P')
-				put(data()->img.player_w, j, i);
+				put(data()->img.player_w.lvl_1, j, i);
 			if (data()->map[i][j] == 'L')
 				put(data()->img.enemy, j, i);
 			j++;
@@ -101,7 +88,7 @@ void	put_map_to_window(void)
 	}
 }
 
-int	check_arg(int argc, char *argv[])
+static int	check_arg(int argc, char *argv[])
 {
 	char	*str;
 	int		i;
@@ -125,6 +112,8 @@ int	check_arg(int argc, char *argv[])
 
 int	main(int argc, char **argv)
 {
+    gettimeofday(&data()->fps.start_t, NULL);
+
 	load_map(check_arg(argc, argv));
 	check_map();
 	data()->mlx = mlx_init();
@@ -132,11 +121,10 @@ int	main(int argc, char **argv)
 	mlx_new_window(data()->mlx, data()->width * 64, data()->height * 64, "So long!");
 	if (!data()->mlx || !data()->win_ptr)
 		err("Error: Couldn't initialize window!\n", 1);
-	assets();
 	player_assets();
 	put_map_to_window();
 	mlx_hook(data()->win_ptr, 17, 0, destroy_hook, data());
+	mlx_loop_hook(data()->mlx, frame_hook, &data);
 	mlx_key_hook(data()->win_ptr, movekey_hook, data());
 	mlx_loop(data()->mlx);
-
 }

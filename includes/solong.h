@@ -14,6 +14,7 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <sys/time.h>
 # include <unistd.h>
 # include <fcntl.h>
 # include "minilibx-linux/mlx.h"
@@ -25,31 +26,40 @@
 # define KEY_A 97
 # define KEY_ESC 65307
 
+typedef struct s_player
+{
+	void	*lvl_1;
+	void	*lvl_2;
+	void	*lvl_3;
+}t_player;
+
 typedef struct s_img
 {
-	void	*empty;
-	void	*wall;
-	void	*collectible;
-	void	*exit;
-	void	*player_w;
-	void	*player_a;
-	void	*player_s;
-	void	*player_d;
-	void	*player_w2;
-	void	*player_a2;
-	void	*player_s2;
-	void	*player_d2;
-	void	*player_w3;
-	void	*player_a3;
-	void	*player_s3;
-	void	*player_d3;
-	void	*enemy;
-	int		height;
-	int		width;
+	void		*empty;
+	void		*wall;
+	void		*collectible;
+	void		*exit;
+	t_player	player_w;
+	t_player	player_a;
+	t_player	player_s;
+	t_player	player_d;
+	void		*enemy;
+	int			height;
+	int			width;
 }t_img;
+
+typedef struct s_fps
+{
+	struct timeval	start_t;
+	struct timeval	current_t;
+	long	frames;
+	long	last_frames;
+	float	fps;
+}t_fps;
 
 typedef struct s_data
 {
+	t_fps	fps;
 	t_img	img;
 	void	*mlx;
 	void	*win_ptr;
@@ -75,16 +85,11 @@ typedef struct s_data
 t_data	*data(void);
 
 //-----	HOOKS	-----//
-int		mouse_hook(int button, int x, int y);
 int		destroy_hook(void);
-int		key_hook(int keycode);
 int		movekey_hook(int keypress);
+int		frame_hook(void);
 
 //-----	LIBFT	-----//
-int		wordnum(char *s, char c);
-int		wordlen(char *s, char c);
-char	*word(char *s, char c);
-char	*ft_itoa(long long n, int bs, char *b);
 char	**ft_split(char *s, char c);
 int		ft_strncmp(char *s1, char *s2, size_t n);
 char	*ft_substr(char *s, unsigned int start, size_t len);
@@ -93,22 +98,17 @@ char	*ft_strjoin(char *s1, char *s2);
 
 //-----	UTILS	-----//
 void	put(void *img, int x, int y);
-void	assets(void);
-void	check_help(int x, int y);
+int		*xpm_to_image(char  *filename);
 void	print_map(char **map);
-
-void	put_player_w(int x, int y);
-void	put_player_a(int x, int y);
-void	put_player_s(int x, int y);
-void	put_player_d(int x, int y);
+int		check_move(char c);
 
 //-----	MAP		-----//
 void	check_map(void);
-int		check_move(char c);
-char	move_enemy(char dir);
+void	check_help(int x, int y);
 
 //-----	ENEMY	-----//
 char	change_enemy(char dir, int num);
+char	move_enemy(char dir);
 
 //-----	CHANGE	-----//
 void	change_img_y(int dir);
@@ -118,5 +118,3 @@ void	change_img_x(int dir);
 int		free_map(char **map);
 void	err(char *msg, int code);
 void	destroy_player_img(void);
-
-//-----	PLAYER	-----//
